@@ -1,9 +1,18 @@
-import { Cascade, Collection, Entity, OneToMany, Property, ManyToOne } from '@mikro-orm/core';
+import { Cascade, Collection, Entity, OneToMany, Property, ManyToOne, Filter } from '@mikro-orm/core';
 
 import { Book } from '.';
 import { BaseEntity } from './BaseEntity';
 
 @Entity()
+@Filter<Author>({
+  name: 'minAge',
+  cond: args => ({
+    age: {
+      $gte: args.age
+    }
+  }),
+  default: true
+})
 export class Author extends BaseEntity {
 
   @Property()

@@ -1,15 +1,19 @@
 import { Get, Controller, Post, Put, HttpStatus, HttpException, Param, Body } from '@nestjs/common';
-import { EntityRepository, QueryOrder, wrap } from '@mikro-orm/core';
+import { EntityManager, EntityRepository, QueryOrder, wrap } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Author } from '../../entities';
 
 @Controller('author')
 export class AuthorController {
 
-  constructor(@InjectRepository(Author) private readonly authorRepository: EntityRepository<Author>) { }
+  constructor(@InjectRepository(Author) private readonly authorRepository: EntityRepository<Author>,
+              private readonly em: EntityManager) { }
 
   @Get()
   async find() {
+    this.em.setFilterParams('minAge', {
+      age: 10
+    });
     return await this.authorRepository.findAll(['books'], { name: QueryOrder.DESC }, 20);
   }
 
